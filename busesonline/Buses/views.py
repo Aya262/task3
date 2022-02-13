@@ -19,49 +19,35 @@ def sign_up(request):
             return render(request,'Buses/index.html')
     context={'form':form}
     return render(request,'registration/sign_up.html',context)
-    
+
 
 @login_required
 def home(request):
-    #customer=User.objects.get(id=cust_id)
-    bus_routes=BusRoute.objects.all()
-    register_type=RegistrationPeriodType.objects.all()
-    context={
-        #'customer':customer,
-        'bus_routes':bus_routes,
-        'register_type':register_type
-    }
-    return render(request,'Buses/home.html',context)
-
-def home2(request):
     form=Reservation()
-    done=False
     if request.method=='POST':
         user=User.objects.get(username=request.user.username)
         form=Reservation(request.POST,instance=user)
         if form.is_valid():
-            form.save()
-            messages.info(request,"The Reservation is Done wait for admin to activate")
-    context={'form':form,
-                 'done':done}
-    return render(request,'Buses/home2.html',context)
-
-
-
-#def activate_reservation(request):
-
-
-def reserve(request,rout_id,reg_id):
-    registrationtype_obj=RegistrationPeriodType.objects.get(id=reg_id)
-    bus_route_obj=BusRoute.objects.get(id=rout_id)
-    #customer_obj=User.objects.get(id=cut_id)
-    registration_obj=Registration(bus_route=bus_route_obj,registration_type=registrationtype_obj)
-    form=Reservation()
-    if request.method=='post':
-        form=Reservation(request.POST,instance=registration_obj)
-        if form.is_valid():
-            form.save()
+            data=form.cleaned_data
+            obj=Registration(customer=user,bus_route=data['bus_route'],registration_type=data['registration_type'],recide_number=data['recide_number'])
+            obj.save()
             print("yes")
+            messages.info(request,"The Reservation is Done wait for admin to activate")
     context={'form':form}
-    return render(request,'Buses/reserve.html',context)
+    return render(request,'Buses/home.html',context)
+
+
+#@group_required('admin')
+def inactivate_reservations(request):
+    all_reservation=Registration.objects.filter(isactive=False)
+    context={'all_reservation':all_reservation}
+    return render(request,'Buses/inactive_reservations.html',context)
+
+#@group_required('admin')
+def active_reservation(request,reserve_id):
+    reservation=Registration.objects.get(id=reserve_id)
+    reservation.isactive=True
+    reservation.save()
+    return render(request,'Buses/activation_done.html')
+
     

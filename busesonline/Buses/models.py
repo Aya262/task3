@@ -7,8 +7,8 @@ from django.contrib.contenttypes.models import ContentType
 #admins_group,created=Group.objects.get_or_create(name='Admins')
 #ct=ContentType.objects.get_for_model(User)
 #permission=Permission.objects.create(codename='activate_reservation',
-                                                #name='activate_reservation',
-                                                #content_type=ct)
+#                                                name='activate_reservation',
+#                                                content_type=ct)
 #admins_group.permissions.add(permission)                                          
 
 class Bus(models.Model):
@@ -54,5 +54,6 @@ class Registration(models.Model):
     recide_number=models.IntegerField()
     isactive=models.BooleanField(default=False)
 
-
+    def __str__(self):
+        return self.customer.username
     #payment_reciept
