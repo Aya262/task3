@@ -1,7 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.contrib.auth.models import Group,Permission
+from django.contrib.contenttypes.models import ContentType
 # Create your models here.
+
+#admins_group,created=Group.objects.get_or_create(name='Admins')
+#ct=ContentType.objects.get_for_model(User)
+#permission=Permission.objects.create(codename='activate_reservation',
+                                                #name='activate_reservation',
+                                                #content_type=ct)
+#admins_group.permissions.add(permission)                                          
 
 class Bus(models.Model):
     serial_number=models.IntegerField(blank=False,null=False)
@@ -43,6 +51,7 @@ class Registration(models.Model):
     #start_date=models.DateField()
     #end_date=models.DateField()
     registration_type=models.ForeignKey(RegistrationPeriodType,on_delete=models.CASCADE)
+    recide_number=models.IntegerField()
     isactive=models.BooleanField(default=False)
 
 

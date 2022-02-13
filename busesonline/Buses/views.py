@@ -4,6 +4,7 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import Reservation
+from  django.contrib import messages
 # Create your views here.
 
 def index(request):
@@ -34,21 +35,20 @@ def home(request):
 
 def home2(request):
     form=Reservation()
+    done=False
     if request.method=='POST':
         user=User.objects.get(username=request.user.username)
-        print(user)
-        print("====================================================================================")
-        print(request.POST)
-        print("====================================================================================")
         form=Reservation(request.POST,instance=user)
         if form.is_valid():
             form.save()
-            print("Registration Done")
-            print("====================================================================================")
-
-    context={'form':form}
+            messages.info(request,"The Reservation is Done wait for admin to activate")
+    context={'form':form,
+                 'done':done}
     return render(request,'Buses/home2.html',context)
 
+
+
+#def activate_reservation(request):
 
 
 def reserve(request,rout_id,reg_id):
