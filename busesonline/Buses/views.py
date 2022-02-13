@@ -34,12 +34,18 @@ def home(request):
 
 def home2(request):
     form=Reservation()
-    if request.method=='post':
-        form=Reservation(request.POST)
+    if request.method=='POST':
+        user=User.objects.get(username=request.user.username)
+        print(user)
+        print("====================================================================================")
+        print(request.POST)
+        print("====================================================================================")
+        form=Reservation(request.POST,instance=user)
         if form.is_valid():
             form.save()
             print("Registration Done")
-            
+            print("====================================================================================")
+
     context={'form':form}
     return render(request,'Buses/home2.html',context)
 
